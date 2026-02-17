@@ -1,0 +1,382 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ note.body[:20] }}
+{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+/* 笔记详情基础样式（保留原有） */
+.note-detail {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    overflow: hidden; /* 防止容器内元素溢出 */
+}
+
+.note-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    color: #666;
+    font-size: 14px;
+}
+
+.note-id {
+    color: #007bff;
+    font-weight: 600;
+    margin-right: 15px;
+}
+
+.note-time {
+    margin-right: 15px;
+}
+
+.note-author {
+    color: #28a745;
+    font-weight: 600;
+}
+
+/* 笔记内容溢出控制（保留） */
+.note-content {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-all;
+    margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+    .note-detail {
+        margin: 20px 15px;
+        padding: 20px;
+    }
+    .note-content {
+        font-size: 15px;
+    }
+}
+
+/* 评论模块核心优化：高度自适应文本 */
+.comments-title {
+    font-size: 18px;
+    color: #222;
+    font-weight: 600;
+    margin: 0 0 15px 0; /* 减少底部间距，更紧凑 */
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+}
+.comments-title::before {
+    content: "💬";
+    margin-right: 8px;
+    font-size: 20px;
+}
+
+/* 评论列表容器：无多余间距 */
+.comments-list {
+    margin-bottom: 20px; /* 减少底部间距 */
+}
+
+/* 单条评论卡片：高度完全自适应 */
+.comment-card {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 12px 16px; /* 减少内边距，贴合文本 */
+    margin-bottom: 10px; /* 减少卡片间距 */
+    border-left: 4px solid #007bff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    /* 核心：高度自适应，无最小高度 */
+    height: auto;
+    min-height: unset;
+}
+.comment-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px); /* 轻微上浮，不夸张 */
+    background: #fafbfc;
+}
+
+/* 评论作者信息：紧凑布局 */
+.comment-author {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px; /* 减少底部间距 */
+}
+.comment-author-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #28a745;
+}
+.comment-author-id {
+    font-size: 12px;
+    color: #999;
+    margin-left: 8px;
+    font-family: monospace;
+}
+.comment-id {
+    font-size: 12px;
+    color: #888;
+    font-family: monospace;
+}
+
+/* 评论内容：高度自适应，无多余间距 */
+.comment-content {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #333;
+    margin: 6px 0 8px 0; /* 大幅减少上下间距 */
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-all; /* 强制长文本换行，不撑破卡片 */
+    padding: 0; /* 移除内边距 */
+    border-bottom: none; /* 移除虚线分隔，更紧凑 */
+}
+
+/* 评论时间：紧凑展示 */
+.comment-time {
+    font-size: 12px;
+    color: #777;
+    text-align: right;
+    display: block;
+    margin-top: 4px; /* 减少顶部间距 */
+}
+.comment-time::before {
+    content: "🕒 ";
+    font-size: 10px;
+}
+
+/* 空评论提示：高度自适应 */
+.empty-comments {
+    text-align: center;
+    padding: 20px 10px; /* 减少内边距 */
+    color: #999;
+    font-size: 15px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    margin: 10px 0 20px 0;
+    border: 1px dashed #eee;
+    height: auto; /* 自适应高度 */
+}
+.empty-comments::before {
+    content: "💭";
+    font-size: 25px;
+    display: block;
+    margin-bottom: 8px;
+}
+.fixed-comment-form {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 15px;
+    box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.08);
+    z-index: 999; /* 确保在最上层 */
+    max-width: 860px; /* 和笔记详情宽度匹配 */
+    margin: 0 auto; /* 居中显示 */
+}
+
+/* 表单内部容器 - 排版优化 */
+.comment-form-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* 美化的评论输入框 */
+.custom-comment-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 60px;
+    max-height: 200px;
+    transition: all 0.2s ease;
+    background: #fafafa;
+    font-family: inherit;
+}
+
+.custom-comment-textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    background: #fff;
+}
+
+/* 美化的提交按钮 */
+.custom-comment-submit {
+    align-self: flex-end; /* 按钮右对齐 */
+    padding: 10px 24px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.custom-comment-submit:hover {
+    background-color: #0069d9;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+}
+
+.custom-comment-submit:active {
+    background-color: #005cbf;
+    transform: translateY(1px);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .fixed-comment-form {
+        max-width: 100%;
+        padding: 10px 15px;
+    }
+
+    .custom-comment-textarea {
+        min-height: 50px;
+    }
+}
+    .login-prompt {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 20px 15px;
+    box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    max-width: 860px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 15px;
+    color: #666;
+}
+
+.login-prompt-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.login-prompt-text::before {
+    content: "🔒";
+    font-size: 18px;
+}
+
+.login-prompt a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+    transition: color 0.2s ease;
+}
+
+.login-prompt a:hover {
+    color: #005cbf;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .login-prompt {
+        max-width: 100%;
+        padding: 15px 10px;
+    }
+    .login-prompt-text {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+/* 保留之前所有的样式 */
+.note-detail {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    overflow: hidden;
+    margin-bottom: 120px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="note-detail">
+    <div class="note-header">
+        <span class="note-id">笔记ID：{{ note.id }}</span>
+        <span class="note-time">创建时间：{{ note.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+        <br>
+        <span class="note-author">
+            作者：{{ note.user.username  }}<br>
+            作者ID：{{ note.user.id  }}
+        </span>
+    </div>
+    <div class="note-content">
+        {{ note.body }}
+    </div>
+
+    <h3 class="comments-title">评论区</h3>
+    <div class="comments-list">
+        {% if comments %}
+            {% for comment in comments %}
+                <div class="comment-card">
+                    <div class="comment-author">
+                        <div>
+                            <span class="comment-author-name">{{ comment.user.username  }}</span>
+                            <span class="comment-author-id">ID: {{ comment.user.id  }}</span>
+                        </div>
+                        <span class="comment-id">评论ID: {{ comment.id }}</span>
+                    </div>
+                    <div class="comment-content">
+                        {{ comment.body }}
+                    </div>
+                    <span class="comment-time">
+                        {{ comment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                    </span>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-comments">
+                暂无评论，快来留下你的想法吧～
+            </div>
+        {% endif %}
+    </div>
+</div>
+<div class="hidden-block"></div>
+{% if statu %}
+<form method="post">
+    <div class="fixed-comment-form">
+        <div class="comment-form-inner">
+            {{form.csrf_token }}
+            {{form.body(class="custom-comment-textarea",placeholder="评论...") }}<br>
+            {{form.submit(class="custom-comment-submit",value="确定") }}
+        </div>
+    </div>
+</form>
+{% else %}
+<div class="login-prompt">
+    <div class="login-prompt-text">
+        请先<a href="{{ url_for('login', next=request.path) }}">登录</a>后再评论
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

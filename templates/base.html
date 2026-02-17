@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <!--网站的基本信息-->
+    <meta charset="UTF-8">
+    <meta name="keywords" content="博客，学习，交流，发表文章，分享作品">
+    <meta name ="description" content="本网站为了学习交流而生，为了不断精进，无限进步，在这个网站或许你能找到你感兴趣的东西，">
+    <meta name="generator" content="Pycharm">
+    <meta name = "author" content="peace">
+    <link rel="icon" href="{{ url_for('static', filename='image/logo.png') }}" type="image/png">
+    <!--引用-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>{% block title %} Learning for best future {% endblock %}</title>
+    {% block style %} {% endblock %}
+    {% endblock %}
+</head>
+<body>
+<div class="guide">
+        <img src="{{ url_for('static', filename='image/logo-white.png') }}" class="logo" alt="logo" id="rotatelogo">
+        <div class="guide-font-group">
+            <div class="guide-font"><a href="{{ url_for('index') }}">主页</a></div>
+            <div class="guide-font"><a href="{{ url_for('notes',page=1) }}">随记</a></div>
+            <div class="guide-font"><a href="{{ url_for('all_articles') }}">知识</a></div>
+            <div class="guide-font"><a href="{{ url_for('about') }}">关于</a></div>
+            <a href="
+            {%  if current_user.is_authenticated %}
+                {{url_for('settings') }}
+            {% else %}
+                {{ url_for('login') }}
+            {% endif %}
+            "><img src="{{ url_for('static', filename='image/Login.png') }}" class="Login"></a>
+        </div>
+</div>
+<div class="hidden-block"></div>
+
+<div class="flash-messages-container">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <!-- 给不同分类的消息加不同样式（success 绿色/ danger 红色） -->
+      <div class="flash-message flash-{{ category }}">
+        {{ message }}
+          <button class="flash-close" onclick="closeFlash(this)">×</button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+</div>
+
+    {% block content %}
+    {% endblock %}
+
+
+{% block scripts %}
+<script>
+
+    const logo = document.getElementById('rotatelogo');
+    const html = document.documentElement;
+
+    logo.addEventListener('click',function() {
+    html.classList.toggle('rotate-180');
+    });
+
+     function closeFlash(button) {
+        const flashMsg = button.closest('.flash-message');
+        if (flashMsg) {
+            flashMsg.style.animation = 'slideOut 0.3s ease forwards';
+            setTimeout(() => {
+                if (flashMsg.parentNode) {
+                    flashMsg.remove();
+                }
+            }, 300);
+        }
+    }
+
+    // 自动消失（1.5秒）
+    document.addEventListener('DOMContentLoaded', function() {
+        const flashMessages = document.querySelectorAll('.flash-message');
+
+        flashMessages.forEach(function(message) {
+            // 1.5秒后自动消失
+            setTimeout(function() {
+                message.style.animation = 'slideOut 0.3s ease forwards';
+
+                setTimeout(function() {
+                    if (message.parentNode) {
+                        message.remove();
+                    }
+                }, 300);
+            }, 1500);
+
+            // 点击任意位置关闭
+            message.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('flash-close')) {
+                    closeFlash(message.querySelector('.flash-close'));
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}
+</body>
+</html>

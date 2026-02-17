@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% block head %}
+{{ super() }}
+<style>
+    /* 简约笔记样式 */
+    .notes-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .note-card {
+        background: #fff;
+        border: 1px solid #eaeaea;
+        padding: 20px;
+        margin-bottom: 16px;
+        border-radius: 4px;
+        transition: box-shadow 0.2s ease; /* 新增：卡片悬停阴影 */
+    }
+
+    /* 新增：卡片悬停效果，提升交互感 */
+    .note-card:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .note-author {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 8px;
+    }
+
+    .note-author strong {
+        color: #333;
+    }
+
+    .note-content {
+        word-wrap: break-word;      /* 兼容旧浏览器 */
+        word-break: break-all;      /* 强制换行，包括连续字母/数字 */
+        white-space: pre-wrap;      /* 保留换行符，同时自动换行 */
+        /* 2. 可选：超出指定行数时显示省略号（进阶，避免卡片过高） */
+        display: -webkit-box;       /* 弹性盒模型 */
+        -webkit-line-clamp: 3;      /* 只显示3行 */
+        -webkit-box-orient: vertical;/* 垂直排列 */
+        overflow: hidden;           /* 隐藏超出部分 */
+        text-overflow: ellipsis;    /* 超出显示省略号 */
+        font-size: 15px;
+        line-height: 1.6;
+        color: #333;
+        margin: 12px 0;
+        white-space: pre-line;
+    }
+
+    .note-meta {
+        font-size: 12px;
+        color: #999;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 1px solid #f5f5f5;
+        align-items: center; /* 新增：垂直居中对齐 */
+    }
+
+    .note-id {
+        font-family: monospace;
+    }
+
+    /* 核心：详情按钮样式 */
+    .note-detail-btn {
+        display: inline-block;
+        padding: 4px 10px; /* 内边距，形成按钮大小 */
+        background-color: #f5f7fa; /* 浅灰背景，简约风 */
+        color: #4285f4; /* 主题蓝色，醒目但不刺眼 */
+        text-decoration: none; /* 去掉下划线 */
+        border-radius: 3px; /* 小圆角，贴合整体风格 */
+        border: 1px solid #e0e6ed; /* 浅边框，强化按钮形态 */
+        font-size: 12px; /* 字号匹配meta信息 */
+        transition: all 0.2s ease; /* 过渡动画，交互更丝滑 */
+        margin-left: 8px; /* 和时间拉开间距 */
+    }
+
+    /* 悬停效果 */
+    .note-detail-btn:hover {
+        background-color: #ebf1fc; /* 浅蓝背景，呼应文字色 */
+        border-color: #d0e0fc; /* 边框变色 */
+        color: #3367d6; /* 文字加深 */
+    }
+
+    /* 点击效果 */
+    .note-detail-btn:active {
+        background-color: #e1eafc;
+        transform: translateY(1px); /* 轻微下沉，模拟物理按钮 */
+    }
+
+    .empty-notes {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+        font-size: 14px;
+    }
+
+    /* 简洁分页 */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        margin: 32px 0;
+        list-style: none;
+        padding: 0;
+    }
+
+    .pagination a, .pagination span {
+        padding: 6px 12px;
+        border: 1px solid #ddd;
+        text-decoration: none;
+        color: #333;
+        font-size: 14px;
+        border-radius: 2px;
+    }
+
+    .pagination .current {
+        background: #f5f5f5;
+        border-color: #ccc;
+    }
+
+    .pagination a:hover {
+        background: #f9f9f9;
+    }
+
+    .disabled {
+        color: #ccc;
+        cursor: not-allowed;
+    }
+    .publish-btn {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    padding: 10px 20px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: background-color 0.2s ease;
+}
+.publish-btn:hover {
+    background-color: #3367d6;
+}
+</style>
+{% endblock %}
+{% block title %}
+     Learning for best future
+{% endblock %}
+{% block content %}
+<div class="notes-container">
+    {% for note in notes %}
+    <div class="note-card">
+        <div class="note-author">
+            作者: <strong>{{ note.user.username }}</strong>
+        </div>
+
+        <div class="note-content">
+            {{ note.body }}
+        </div>
+
+        <div class="note-meta">
+            <div class="note-id">ID: {{ note.id }}</div>
+            <div class="note-date">
+                {{ note.created_at.strftime('%Y-%m-%d %H:%M') }}
+                <!-- 关键修改：给详情链接加自定义class -->
+                <a href="{{ url_for('note', id = note.id) }}" class="note-detail-btn">详情</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-notes">
+        暂无数据
+    </div>
+    {% endfor %}
+</div>
+    <div class="pagination">
+        <!-- 上一页：有上一页才显示可点击链接 -->
+        {% if pagination.has_prev %}
+            <a href="{{ url_for('notes', page=pagination.prev_num) }}">上一页</a>
+        {% else %}
+            <span class="disabled">上一页</span>
+        {% endif %}
+
+        <!-- 页码：只显示当前页前后少量页码（避免太多） -->
+        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1) %}
+            {% if page_num %}
+                {% if pagination.page == page_num %}
+                    <!-- 当前页高亮，不可点击 -->
+                    <span class="current">{{ page_num }}</span>
+                {% else %}
+                    <!-- 其他页码可点击跳转 -->
+                    <a href="{{ url_for('notes', page=page_num) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                <span>...</span>  <!-- 页码省略号 -->
+            {% endif %}
+        {% endfor %}
+
+        <!-- 下一页：有下一页才显示可点击链接 -->
+        {% if pagination.has_next %}
+            <a href="{{ url_for('notes', page=pagination.next_num) }}">下一页</a>
+        {% else %}
+            <span class="disabled">下一页</span>
+        {% endif %}
+    </div>
+    <a href="{{ url_for('publish') }}" class="publish-btn">发随机</a>
+{% endblock %}

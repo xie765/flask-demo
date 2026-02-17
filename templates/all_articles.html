@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+
+{% block title %}peace | 知识汇总{% endblock %}
+
+{% block style %}
+<style>
+    /* 全局样式：和base.html完全统一 */
+    body {
+        background-color: #f9f9f9;
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* 核心容器 */
+    .knowledge-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    /* 页面标题 */
+    .page-header {
+        text-align: center;
+        margin-bottom: 50px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+    .page-title {
+        font-size: 30px;
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    .page-subtitle {
+        font-size: 16px;
+        color: #666;
+    }
+
+    /* 模块化网格：自动适配数量，想加多少模块都可以 */
+    .module-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        margin-bottom: 50px;
+    }
+
+    /* 模块卡片：通用样式，所有模块共用 */
+    .module-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.2s ease;
+    }
+    .module-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 模块标题（带图标） */
+    .module-title {
+        display: flex;
+        align-items: center;
+        font-size: 20px;
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .module-icon {
+        font-size: 22px;
+        margin-right: 10px;
+        color: #007bff; /* 和全站强调色统一 */
+    }
+
+    /* 模块内容列表：通用样式，适配所有类型内容 */
+    .module-content-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .module-content-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #f5f5f5;
+        transition: background 0.2s ease;
+        border-radius: 4px;
+    }
+    .module-content-item:last-child {
+        border-bottom: none;
+    }
+    .module-content-item:hover {
+        background: #f8f9fa;
+    }
+
+    /* 内容链接样式 */
+    .module-content-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #333;
+        flex: 1;
+    }
+    .content-item-icon {
+        font-size: 16px;
+        margin-right: 10px;
+        color: #007bff;
+    }
+    .content-item-info {
+        flex: 1;
+    }
+    .content-item-name {
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.2;
+    }
+    .content-item-desc {
+        font-size: 12px;
+        color: #999;
+        margin-top: 2px;
+    }
+
+    /* 内容标签（区分类型） */
+    .content-item-tag {
+        font-size: 12px;
+        color: #007bff;
+        background: #e3f2fd;
+        padding: 2px 8px;
+        border-radius: 10px;
+        white-space: nowrap;
+    }
+
+    /* 响应式适配：手机端自动堆叠 */
+    @media (max-width: 768px) {
+        .module-grid {
+            grid-template-columns: 1fr;
+        }
+        .page-title {
+            font-size: 26px;
+        }
+        .module-card {
+            padding: 25px 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="knowledge-container">
+    <div class="page-header">
+        <h1 class="page-title">📚 peace的知识宝库</h1>
+        <p class="page-subtitle">收纳一些学习资源 ✨</p>
+    </div>
+
+    <div class="module-grid">
+        <div class="module-card">
+            <h2 class="module-title">
+                <span class="module-icon">📁</span>
+                存储文件
+            </h2>
+            <ul class="module-content-list">
+                暂无
+                <!--
+                <li class="module-content-item">
+                    <a href="https://roadmap.sh/" target="_blank" class="module-content-link">
+                        <span class="content-item-icon">🌐</span>
+                        <div class="content-item-info">
+                            <div class="content-item-name">RoadMap</div>
+                            <div class="content-item-desc">Developer RoadMaps</div>
+                        </div>
+                    </a>
+                    <span class="content-item-tag">文章</span>
+                </li>
+
+                <li class="module-content-item">
+                    <a href="https://zlib.ggonav.com/" target="_blank" class="module-content-link">
+                        <span class="content-item-icon">💻</span>
+                        <div class="content-item-info">
+                            <div class="content-item-name">Z-library</div>
+                            <div class="content-item-desc">电子图书馆</div>
+                        </div>
+                    </a>
+                    <span class="content-item-tag">图书</span>
+                </li>
+                -->
+            </ul>
+        </div>
+
+        <!-- ============== 模块2：学习网站 ============== -->
+        <div class="module-card">
+            <h2 class="module-title">
+                <span class="module-icon">🔗</span>
+                学习网站
+            </h2>
+            <ul class="module-content-list">
+                <li class="module-content-item">
+                    <a href="https://roadmap.sh/" target="_blank" class="module-content-link">
+                        <span class="content-item-icon">🌐</span>
+                        <div class="content-item-info">
+                            <div class="content-item-name">RoadMap</div>
+                            <div class="content-item-desc">Developer RoadMaps</div>
+                        </div>
+                    </a>
+                    <span class="content-item-tag">文章</span>
+                </li>
+
+                <li class="module-content-item">
+                    <a href="https://zlib.ggonav.com/" target="_blank" class="module-content-link">
+                        <span class="content-item-icon">💻</span>
+                        <div class="content-item-info">
+                            <div class="content-item-name">Z-library</div>
+                            <div class="content-item-desc">电子图书馆</div>
+                        </div>
+                    </a>
+                    <span class="content-item-tag">图书</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ============== 模块3：实用工具 ============== -->
+        <div class="module-card">
+            <h2 class="module-title">
+                <span class="module-icon">⭐</span>
+                实用工具
+            </h2>
+            <ul class="module-content-list">
+                <!-- 可自由添加/删除li，改内容即可 -->
+                <li class="module-content-item">
+                    <a href="https://www.processon.com/" target="_blank" class="module-content-link">
+                        <span class="content-item-icon">🖼️</span>
+                        <div class="content-item-info">
+                            <div class="content-item-name">ProcessOn</div>
+                            <div class="content-item-desc">在线思维导图/流程图</div>
+                        </div>
+                    </a>
+                    <span class="content-item-tag">工具</span>
+                </li>
+
+
+            </ul>
+        </div>
+
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,178 @@
+
+/*全局样式*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+/* 旋转 */
+html {
+    transform-origin:center center;
+    transition:transform 0.5s ease;
+}
+html.rotate-180 {
+    transform: rotate(180deg)
+}
+
+/*整体导航栏*/
+.guide {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 50px;
+    height:100px;
+    background: rgb(50,50,50);
+    left:0px;
+    right:0px;
+    position:fixed;
+    overflow:hidden;
+    z-index:999;
+}
+/*导航栏logo*/
+.logo{
+    width:100px;
+    height:100px;
+    object-fit: contain;
+}
+.logo:hover{
+    transform:scale(1.3);
+    filter:brightness(1.2)hue-rotate(15deg);
+}
+/*导航栏字体*/
+.guide-font-group {
+    display: flex;
+    gap: 60px;
+}
+.guide-font {
+    font-family: "黑体";
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    cursor: pointer;
+}
+.guide-font a {
+    text-decoration:none;
+    color:rgb(255,255,255)
+}
+.guide-font:hover {
+    transform:scale(1.5);
+}
+
+.hidden-block {
+       width: 100%;
+       height:150px;
+       background:transparent;
+       padding:20px;
+       box-sizing:border-box;
+}
+.Login {
+    width:25px;
+    height:25px;
+    object-fit:contain;
+}
+/* 悬浮 Flash - 固定定位，不占用文档流 */
+.flash-messages-container {
+    position: fixed;
+    top: 120px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+
+.flash-message {
+    position: relative;
+    width: 400px;
+    max-width: 90%;
+    padding: 15px 40px 15px 20px;
+    margin: 5px 0;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.3s ease;
+    pointer-events: auto;  /* 允许点击 */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 从顶部滑入动画 */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 滑出动画 */
+@keyframes slideOut {
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* 消息类型样式 - 半透明增强效果 */
+.flash-success {
+    background: linear-gradient(135deg, rgba(72, 187, 120, 0.95), rgba(56, 161, 105, 0.95));
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.flash-danger, .flash-error {
+    background: linear-gradient(135deg, rgba(245, 101, 101, 0.95), rgba(229, 62, 62, 0.95));
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.flash-warning {
+    background: linear-gradient(135deg, rgba(237, 137, 54, 0.95), rgba(221, 107, 32, 0.95));
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.flash-info {
+    background: linear-gradient(135deg, rgba(66, 153, 225, 0.95), rgba(49, 130, 206, 0.95));
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 关闭按钮 */
+.flash-close {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.flash-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.flash-danger, .flash-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}

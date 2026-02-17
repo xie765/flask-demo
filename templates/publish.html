@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block head %}
+{{ super() }}
+<style>
+.publish-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* 表单整体样式 */
+.note-form {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #f0f0f0;
+}
+
+/* 标签样式 */
+.form-label {
+    display: block;
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* 文本输入框样式 */
+.note-input {
+    width: 100%;
+    min-height: 200px;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: vertical; /* 仅允许垂直拉伸 */
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+/* 输入框聚焦样式 */
+.note-input:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.1);
+}
+
+/* 提交按钮样式 */
+.submit-btn {
+    margin-top: 16px;
+    padding: 10px 24px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+/* 按钮悬停/点击效果 */
+.submit-btn:hover {
+    background-color: #3367d6;
+}
+.submit-btn:active {
+    background-color: #2d5bba;
+    transform: translateY(1px);
+}
+
+/* 错误提示样式（适配表单验证错误） */
+.form-error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+</style>
+{% endblock %}
+
+{% block title %}
+     Learning for best future
+{% endblock %}
+{% block content %}
+<div class="publish-container">
+    <form method="post" class="note-form">
+        {{form.csrf_token }}
+
+        {{form.body.label(class="form-label")}}
+        {{ form.body(class="note-input") }}
+        {% for error in form.body.errors %}
+            <span class="form-error">{{ error }}</span>
+        {% endfor %}
+        <br>
+
+        {{form.submit(class="submit-btn")}}
+        <br><br>
+    </form>
+</div>
+
+</form>
+{% endblock %}

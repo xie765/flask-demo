@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block head %}
+{{ super() }}
+<style>
+form {
+      width: 350px;          /* 固定宽度 */
+      margin: 50px auto;     /* 水平居中，垂直间距 */
+      padding: 30px;         /* 内边距，避免内容贴边 */
+      border: 1px solid #e0e0e0; /* 边框 */
+      border-radius: 8px;    /* 圆角，美化边角 */
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); /* 阴影，增加立体感 */
+      background-color: #fff; /* 背景色 */
+    }
+
+    /* 标签样式 - 文字排版属性 */
+    label {
+      display: block;        /* 块级显示，独占一行 */
+      margin-bottom: 8px;    /* 与输入框的间距 */
+      font-size: 14px;       /* 字体大小 */
+      color: #333;           /* 文字颜色 */
+      font-weight: 500;      /* 字体加粗 */
+    }
+
+    /* 复选框标签特殊处理 - 行内显示 */
+    label[for="remember"] {
+      display: inline-block; /* 行内块，与复选框同行 */
+      margin-left: 8px;      /* 与复选框的间距 */
+      margin-bottom: 0;      /* 取消底部间距 */
+      font-weight: normal;   /* 取消加粗 */
+    }
+
+    /* 输入框样式 - 核心美化属性 */
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;           /* 宽度占满容器 */
+      padding: 12px 15px;    /* 内边距，增加点击区域 */
+      margin-bottom: 20px;   /* 与下一个元素的间距 */
+      border: 1px solid #ddd; /* 边框颜色 */
+      border-radius: 4px;    /* 圆角 */
+      font-size: 14px;       /* 输入文字大小 */
+      transition: border-color 0.2s ease; /* 边框变色过渡动画 */
+    }
+
+    /* 输入框聚焦样式 - 交互属性 */
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline: none;         /* 取消默认聚焦外框 */
+      border-color: #4285f4; /* 聚焦时边框变色 */
+      box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2); /* 聚焦高亮阴影 */
+    }
+
+    /* 复选框样式 - 调整位置 */
+    input[type="checkbox"] {
+      margin: 15px 0 20px 0; /* 上下间距 */
+      vertical-align: middle; /* 与文字垂直居中对齐 */
+    }
+
+    /* 提交按钮样式 - 按钮美化属性 */
+    input[type="submit"] {
+      width: 100%;           /* 宽度占满 */
+      padding: 12px;         /* 内边距 */
+      border: none;          /* 取消默认边框 */
+      border-radius: 4px;    /* 圆角 */
+      background-color: #4285f4; /* 背景色 */
+      color: #fff;           /* 文字颜色 */
+      font-size: 16px;       /* 字体大小 */
+      font-weight: 500;      /* 字体加粗 */
+      cursor: pointer;       /* 鼠标悬停变手型 */
+      transition: background-color 0.2s ease; /* 背景色过渡 */
+    }
+
+    /* 按钮悬停样式 - 交互属性 */
+    input[type="submit"]:hover {
+      background-color: #3367d6; /* 悬停时加深背景色 */
+    }
+
+    /* 按钮点击样式 - 按下效果 */
+    input[type="submit"]:active {
+      background-color: #2d5bd8; /* 点击时更深的颜色 */
+    }
+    .return-loading {
+        text-align:center;
+        margin-top:20px;
+    }
+    .return-loading a {
+      color: #000;         /* 文字颜色为纯黑色 */
+      text-decoration: none; /* 取消默认的下划线（可选，看你需求） */
+      font-size: 14px;     /* 可选：调整字体大小 */
+    }
+    .return-loading a:hover {
+      color: #333;         /* 悬停时稍浅的黑色 */
+      text-decoration: underline; /* 悬停显示下划线 */
+    }
+
+</style>
+{% endblock %}
+
+{% block title %}
+     Learning for best future
+{% endblock %}
+
+{% block content %}
+
+<form method="post" novalidate>
+    <h1>用户名或密码修改</h1><br>
+    {{form.csrf_token }}
+    <h3>用户id :{{current_user.id }}<br></h3>
+    {{form.username.label }}{{ form.username }}<br>
+    {{form.password.label }}{{ form.password }}<br>
+    {{form.password2.label }}{{ form.password2 }}<br>
+    {{form.submit }}<br><br>
+    {{form.submit1 }}<br>
+</form>
+<div class="return-loading"><a href=" {{url_for('index')}}">返回主页</a></div>
+{% endblock %}
